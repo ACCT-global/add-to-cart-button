@@ -27,8 +27,8 @@ interface Props {
   available: boolean
   disabled: boolean
   multipleAvailableSKUs: boolean
-  customToastUrl: string
-  customOneClickBuyLink: string
+  customToastUrl?: string
+  customOneClickBuyLink?: string
   skuItems: CartItem[]
   showToast: Function
   allSkuVariationsSelected: boolean
@@ -36,6 +36,8 @@ interface Props {
   unavailableText?: string
   productLink: ProductLink
   onClickBehavior: 'add-to-cart' | 'go-to-product-page' | 'ensure-sku-selection'
+  customEventId?: string
+  addToCartFeedback?: 'customEvent' | 'toast'
 }
 
 const CSS_HANDLES = [
@@ -99,6 +101,8 @@ function AddToCartButton(props: Props) {
     productLink,
     onClickBehavior,
     multipleAvailableSKUs,
+    customEventId,
+    addToCartFeedback,
   } = props
 
   const intl = useIntl()
@@ -163,11 +167,19 @@ function AddToCartButton(props: Props) {
 
     const itemsAdded = addItem(skuItems, { ...utmParams, ...utmiParams })
     const pixelEventItems = skuItems.map(adjustSkuItemForPixelEvent)
+    const pixelEvent =
+      customEventId && addToCartFeedback === 'customEvent'
+        ? {
+            id: customEventId,
+            event: 'addToCart',
+            items: pixelEventItems,
+          }
+        : {
+            event: 'addToCart',
+            items: pixelEventItems,
+          }
 
-    push({
-      event: 'addToCart',
-      items: pixelEventItems,
-    })
+    push(pixelEvent)
 
     if (isOneClickBuy) {
       if (
@@ -177,12 +189,13 @@ function AddToCartButton(props: Props) {
         navigate({ to: checkoutURL })
       } else {
         window.location.assign(
-          `${rootPath}${customOneClickBuyLink || checkoutURL}`
+          `${rootPath}${customOneClickBuyLink ?? checkoutURL}`
         )
       }
     }
 
-    toastMessage({ success: true, isNewItem: itemsAdded })
+    addToCartFeedback === 'toast' &&
+      toastMessage({ success: true, isNewItem: itemsAdded })
 
     /* PWA */
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
