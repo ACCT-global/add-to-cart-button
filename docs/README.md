@@ -45,7 +45,7 @@ The `add-to-cart-button` is a block responsible for adding products in the [Mini
 | `customToastUrl`        | `string`  | Defines the link to where users will be redirected when the Toast (pop-up notification displayed when adding an item to the minicart) is clicked on.  | `/checkout/#/cart`   |
 | `text` | `string` | Defines a custom text message to be displayed on the Add To Cart Button. | `Add to cart` *( automatic translation will be applied according to your store's default language)* | 
 | `unavailableText` | `string` | Defines a custom text message to be displayed on the Add To Cart Button when a product is unavailable. | `Unavailable` *(automatic translation will be applied according to your store's default language)* |
-| `customPixelEventId` | `string` | Define the `id` for the event that will be sent by the the button upon user interaction. | `undefined`   |
+| `customPixelEventId` | `string` | Defines the event ID to be sent whenever users interact with the `Add to cart` button. | `undefined`   |
 
 ## Customization
 
